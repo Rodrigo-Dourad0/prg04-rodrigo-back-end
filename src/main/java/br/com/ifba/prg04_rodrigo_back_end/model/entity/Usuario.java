@@ -1,0 +1,36 @@
+package br.com.ifba.prg04_rodrigo_back_end.model.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Entity
+@Table(name = "tb_usuarios")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nome;
+
+    @Column(unique = true)
+    private String email;
+
+    private String senha;
+    private String cpf;
+    private String telefone;
+
+    // Relacionamento: Um Usuário PODE TER um Perfil de Organizador
+    // Cascade = Se deletar o usuario, deleta o perfil dele
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private PerfilOrganizador perfilOrganizador;
+
+    public boolean isOrganizador() {
+        return perfilOrganizador != null;
+    }
+}
