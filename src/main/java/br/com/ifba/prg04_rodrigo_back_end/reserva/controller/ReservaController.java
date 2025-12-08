@@ -7,6 +7,9 @@ import br.com.ifba.prg04_rodrigo_back_end.reserva.entity.Reserva;
 import br.com.ifba.prg04_rodrigo_back_end.reserva.service.ReservaIService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,16 +39,35 @@ public class ReservaController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<ReservaResponse>> listarMinhasReservas(@PathVariable Long usuarioId) {
-        List<Reserva> reservas = service.listarReservasPorUsuario(usuarioId);
-        return ResponseEntity.ok(objectMapper.mapAll(reservas, ReservaResponse.class));
+    public ResponseEntity<Page<ReservaResponse>> listarMinhasReservas(
+            @PathVariable Long usuarioId,
+            @PageableDefault(page = 0, size = 10, sort = "dataReserva") Pageable pageable) {
+
+        Page<Reserva> reservas = service.listarReservasPorUsuario(usuarioId, pageable);
+
+        Page<ReservaResponse> response = reservas.map(reserva -> {
+            ReservaResponse dto = objectMapper.map(reserva, ReservaResponse.class);
+            dto.setNomeUsuario(reserva.getUsuario().getNome());
+            dto.setTituloViagem(reserva.getViagem().getTitulo());
+            return dto;
+        });
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/viagem/{viagemId}")
-    public ResponseEntity<List<ReservaResponse>> listarPorViagem(@PathVariable Long viagemId,
-                                                                 @RequestParam Long organizadorId) {
-        List<Reserva> reservas = service.listarPorViagem(viagemId, organizadorId);
-        return ResponseEntity.ok(objectMapper.mapAll(reservas, ReservaResponse.class));
+    public ResponseEntity<Page<ReservaResponse>> listarPorViagem(
+            @PathVariable Long viagemId,
+            @RequestParam Long organizadorId,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+
+        Page<Reserva> reservas = service.listarPorViagem(viagemId, organizadorId, pageable);
+
+        Page<ReservaResponse> response = reservas.map(reserva ->
+                objectMapper.map(reserva, ReservaResponse.class)
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

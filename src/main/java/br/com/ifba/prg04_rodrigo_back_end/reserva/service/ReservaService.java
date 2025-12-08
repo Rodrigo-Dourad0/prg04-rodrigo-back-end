@@ -10,6 +10,8 @@ import br.com.ifba.prg04_rodrigo_back_end.usuario.repository.UsuarioRepository;
 import br.com.ifba.prg04_rodrigo_back_end.viagem.entity.Viagem;
 import br.com.ifba.prg04_rodrigo_back_end.viagem.repository.ViagemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,14 +74,16 @@ public class ReservaService implements ReservaIService {
     }
 
     @Override
-    public List<Reserva> listarReservasPorUsuario(Long usuarioId) {
+    public Page<Reserva> listarReservasPorUsuario(Long usuarioId, Pageable pageable) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado."));
-        return reservaRepository.findByUsuario(usuario);
+
+
+        return reservaRepository.findByUsuario(usuario, pageable);
     }
 
     @Override
-    public List<Reserva> listarPorViagem(Long viagemId, Long solicitanteId) {
+    public Page<Reserva> listarPorViagem(Long viagemId, Long solicitanteId, Pageable pageable) {
         Viagem viagem = viagemRepository.findById(viagemId)
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada."));
 
@@ -87,7 +91,9 @@ public class ReservaService implements ReservaIService {
         if (!donoId.equals(solicitanteId)) {
             throw new RegraDeNegocioException("Acesso negado.");
         }
-        return reservaRepository.findByViagem(viagem);
+
+
+        return reservaRepository.findByViagem(viagem, pageable);
     }
 
     @Override

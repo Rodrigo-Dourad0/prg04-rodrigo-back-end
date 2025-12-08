@@ -20,8 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva extends PersistenceEntity {
-
-    // ID REMOVIDO
+    
 
     private LocalDateTime dataReserva = LocalDateTime.now();
     private Integer quantidadeLugares;

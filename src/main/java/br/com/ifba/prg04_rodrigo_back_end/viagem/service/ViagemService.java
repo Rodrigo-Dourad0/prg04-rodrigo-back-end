@@ -10,11 +10,12 @@ import br.com.ifba.prg04_rodrigo_back_end.reserva.repository.ReservaRepository;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.repository.UsuarioRepository;
 import br.com.ifba.prg04_rodrigo_back_end.viagem.repository.ViagemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +42,8 @@ public class ViagemService implements ViagemIService {
     }
 
     @Override
-    public List<Viagem> findAll() {
-        return viagemRepository.findAll();
+    public Page<Viagem> findAll(Pageable pageable) {
+        return viagemRepository.findAll(pageable);
     }
 
     @Override

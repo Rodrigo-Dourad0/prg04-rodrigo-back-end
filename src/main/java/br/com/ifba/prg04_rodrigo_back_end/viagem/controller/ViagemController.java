@@ -7,6 +7,9 @@ import br.com.ifba.prg04_rodrigo_back_end.viagem.entity.Viagem;
 import br.com.ifba.prg04_rodrigo_back_end.viagem.service.ViagemIService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +40,21 @@ public class ViagemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ViagemResponse>> listarTodas() {
-        List<Viagem> viagens = service.findAll();
-        return ResponseEntity.ok(objectMapper.mapAll(viagens, ViagemResponse.class));
+    public ResponseEntity<Page<ViagemResponse>> listarTodas(
+            @PageableDefault(page = 0, size = 10, sort = "dataPartida") Pageable pageable) {
+        
+        Page<Viagem> viagensPage = service.findAll(pageable);
+
+
+        Page<ViagemResponse> response = viagensPage.map(viagem -> {
+            ViagemResponse dto = objectMapper.map(viagem, ViagemResponse.class);
+
+
+            dto.setNomeOrganizador(viagem.getOrganizador().getUsuario().getNome());
+            return dto;
+        });
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/buscar")
