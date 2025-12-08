@@ -10,6 +10,9 @@ import br.com.ifba.prg04_rodrigo_back_end.usuario.entity.Usuario;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.service.UsuarioIService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,20 @@ public class UsuarioController {
 
     private final UsuarioIService service;
     private final ObjectMapperUtil objectMapper;
+
+    @GetMapping
+    public ResponseEntity<Page<UsuarioResponse>> listarTodos(
+            @PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable) {
+
+        Page<Usuario> usuariosPage = service.findAll(pageable);
+
+        Page<UsuarioResponse> response = usuariosPage.map(usuario ->
+                objectMapper.map(usuario, UsuarioResponse.class)
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @PostMapping("/cadastrar")
     public ResponseEntity<UsuarioResponse> cadastrar(@RequestBody @Valid UsuarioCreateRequest request) {
@@ -49,10 +66,15 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
                                                      @RequestBody UsuarioUpdateRequest request) {
-
 
         Usuario usuarioComNovosDados = objectMapper.map(request, Usuario.class);
 

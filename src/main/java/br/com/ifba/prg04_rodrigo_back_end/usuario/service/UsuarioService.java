@@ -5,6 +5,8 @@ import br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.entity.PerfilOrganiz
 import br.com.ifba.prg04_rodrigo_back_end.usuario.entity.Usuario;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,11 @@ public class UsuarioService implements UsuarioIService {
     }
 
     @Override
+    public Page<Usuario> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
     @Transactional
     public void tornarOrganizador(Long usuarioId, PerfilOrganizador perfil) {
         Usuario usuario = findById(usuarioId);
@@ -46,6 +53,17 @@ public class UsuarioService implements UsuarioIService {
 
         repository.save(usuario);
     }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+
+       //Por enquanto esta deletando sem a lógica de verificar se ele tem viagens em seu nome, etc...
+        Usuario usuario = findById(id);
+
+        repository.delete(usuario);
+    }
+
 
     @Override
     @Transactional
