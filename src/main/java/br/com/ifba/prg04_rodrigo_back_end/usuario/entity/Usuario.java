@@ -3,6 +3,7 @@ package br.com.ifba.prg04_rodrigo_back_end.usuario.entity;
 import br.com.ifba.prg04_rodrigo_back_end.infraestructure.entity.PersistenceEntity;
 import br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.entity.PerfilOrganizador;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 @Entity
 @Table(name = "tb_usuarios")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario extends PersistenceEntity {
