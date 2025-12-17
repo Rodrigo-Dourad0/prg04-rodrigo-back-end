@@ -32,7 +32,7 @@ public class ReservaController {
         Reserva salva = service.save(entidade, request.getUsuarioId(), request.getViagemId());
 
         ReservaResponse response = objectMapper.map(salva, ReservaResponse.class);
-        response.setNomeUsuario(salva.getUsuario().getNome());
+        response.setNomeUsuario(salva.getUsuario().getPessoa().getNome());
         response.setTituloViagem(salva.getViagem().getTitulo());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -47,7 +47,7 @@ public class ReservaController {
 
         Page<ReservaResponse> response = reservas.map(reserva -> {
             ReservaResponse dto = objectMapper.map(reserva, ReservaResponse.class);
-            dto.setNomeUsuario(reserva.getUsuario().getNome());
+            dto.setNomeUsuario(reserva.getUsuario().getPessoa().getNome());
             dto.setTituloViagem(reserva.getViagem().getTitulo());
             return dto;
         });

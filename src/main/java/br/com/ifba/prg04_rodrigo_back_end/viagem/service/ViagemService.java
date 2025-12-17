@@ -36,7 +36,7 @@ public class ViagemService implements ViagemIService {
         }
 
         viagem.setStatus(StatusViagem.ABERTA);
-        viagem.setOrganizador(usuario.getPerfilOrganizador());
+        viagem.setOrganizador(usuario.getOrganizador());
 
         return viagemRepository.save(viagem);
     }

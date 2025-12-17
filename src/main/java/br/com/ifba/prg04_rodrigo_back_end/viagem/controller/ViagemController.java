@@ -34,7 +34,7 @@ public class ViagemController {
 
         // Entidade -> DTO
         ViagemResponse response = objectMapper.map(salva, ViagemResponse.class);
-        response.setNomeOrganizador(salva.getOrganizador().getUsuario().getNome());
+        response.setNomeOrganizador(salva.getOrganizador().getUsuario().getPessoa().getNome());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -50,7 +50,7 @@ public class ViagemController {
             ViagemResponse dto = objectMapper.map(viagem, ViagemResponse.class);
 
 
-            dto.setNomeOrganizador(viagem.getOrganizador().getUsuario().getNome());
+            dto.setNomeOrganizador(viagem.getOrganizador().getUsuario().getPessoa().getNome());
             return dto;
         });
 
@@ -68,7 +68,7 @@ public class ViagemController {
         Viagem viagem = service.findById(id);
 
         ViagemResponse response = objectMapper.map(viagem, ViagemResponse.class);
-        response.setNomeOrganizador(viagem.getOrganizador().getUsuario().getNome());
+        response.setNomeOrganizador(viagem.getOrganizador().getUsuario().getPessoa().getNome());
 
         return ResponseEntity.ok(response);
     }
@@ -89,7 +89,7 @@ public class ViagemController {
         Viagem atualizada = service.update(id, organizadorId, novosDados);
 
         ViagemResponse response = objectMapper.map(atualizada, ViagemResponse.class);
-        response.setNomeOrganizador(atualizada.getOrganizador().getUsuario().getNome());
+        response.setNomeOrganizador(atualizada.getOrganizador().getUsuario().getPessoa().getNome());
         return ResponseEntity.ok(response);
     }
 }
