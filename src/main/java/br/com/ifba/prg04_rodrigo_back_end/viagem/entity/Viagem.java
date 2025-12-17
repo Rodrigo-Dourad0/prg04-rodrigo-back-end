@@ -1,7 +1,7 @@
 package br.com.ifba.prg04_rodrigo_back_end.viagem.entity;
 
 import br.com.ifba.prg04_rodrigo_back_end.infraestructure.entity.PersistenceEntity;
-import br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.entity.PerfilOrganizador;
+import br.com.ifba.prg04_rodrigo_back_end.organizador.entity.Organizador;
 import br.com.ifba.prg04_rodrigo_back_end.viagem.enums.StatusViagem;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -36,5 +36,5 @@ public class Viagem extends PersistenceEntity {
     // RELACIONAMENTO: Muitas Viagens pertencem a UM Organizador
     @ManyToOne
     @JoinColumn(name = "organizador_id")
-    private PerfilOrganizador organizador;
+    private Organizador organizador;
 }

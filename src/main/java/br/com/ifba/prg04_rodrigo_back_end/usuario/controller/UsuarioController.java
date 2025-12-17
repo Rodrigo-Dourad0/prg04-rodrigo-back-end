@@ -1,8 +1,8 @@
 package br.com.ifba.prg04_rodrigo_back_end.usuario.controller;
 
 import br.com.ifba.prg04_rodrigo_back_end.infraestructure.mapper.ObjectMapperUtil;
-import br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.dto.PerfilOrganizadorRequest;
-import br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.entity.PerfilOrganizador;
+import br.com.ifba.prg04_rodrigo_back_end.organizador.dto.PerfilOrganizadorRequest;
+import br.com.ifba.prg04_rodrigo_back_end.organizador.entity.Organizador;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioCreateRequest;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioUpdateRequest;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioResponse;
@@ -58,7 +58,7 @@ public class UsuarioController {
                                                   @RequestBody @Valid PerfilOrganizadorRequest request) {
 
 
-        PerfilOrganizador perfilEntidade = objectMapper.map(request, PerfilOrganizador.class);
+        Organizador perfilEntidade = objectMapper.map(request, Organizador.class);
 
 
         service.tornarOrganizador(id, perfilEntidade);

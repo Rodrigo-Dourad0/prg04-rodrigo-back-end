@@ -1,7 +1,7 @@
 package br.com.ifba.prg04_rodrigo_back_end.usuario.service;
 
 import br.com.ifba.prg04_rodrigo_back_end.infraestructure.exception.RegraDeNegocioException;
-import br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.entity.PerfilOrganizador;
+import br.com.ifba.prg04_rodrigo_back_end.organizador.entity.Organizador;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.entity.Usuario;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class UsuarioService implements UsuarioIService {
 
     @Override
     @Transactional
-    public void tornarOrganizador(Long usuarioId, PerfilOrganizador perfil) {
+    public void tornarOrganizador(Long usuarioId, Organizador perfil) {
         Usuario usuario = findById(usuarioId);
 
         if (usuario.isOrganizador()) {

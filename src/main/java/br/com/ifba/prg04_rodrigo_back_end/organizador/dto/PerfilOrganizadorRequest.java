@@ -1,4 +1,4 @@
-package br.com.ifba.prg04_rodrigo_back_end.perfilorganizador.dto;
+package br.com.ifba.prg04_rodrigo_back_end.organizador.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
