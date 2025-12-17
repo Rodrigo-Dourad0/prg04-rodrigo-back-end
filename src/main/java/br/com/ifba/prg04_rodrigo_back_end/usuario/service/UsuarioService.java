@@ -40,18 +40,17 @@ public class UsuarioService implements UsuarioIService {
 
     @Override
     @Transactional
-    public void tornarOrganizador(Long usuarioId, Organizador perfil) {
+    public void tornarOrganizador(Long usuarioId, Organizador organizador) {
         Usuario usuario = findById(usuarioId);
 
         if (usuario.isOrganizador()) {
             throw new RegraDeNegocioException("Este usuário já possui perfil de organizador.");
         }
 
-        perfil.setUsuario(usuario);
-        usuario.setPerfilOrganizador(perfil);
+        organizador.setUsuario(usuario);
+        usuario.setOrganizador(organizador);
 
-
-        repository.save(usuario);
+        repository.save(usuario); // Cascade salva o organizador
     }
 
     @Override
@@ -71,19 +70,26 @@ public class UsuarioService implements UsuarioIService {
         Usuario usuarioExistente = findById(id);
 
 
-        if (usuarioComNovosDados.getNome() != null && !usuarioComNovosDados.getNome().isBlank()) {
-            usuarioExistente.setNome(usuarioComNovosDados.getNome());
-        }
-
-        if (usuarioComNovosDados.getTelefone() != null && !usuarioComNovosDados.getTelefone().isBlank()) {
-            usuarioExistente.setTelefone(usuarioComNovosDados.getTelefone());
-        }
-
         if (usuarioComNovosDados.getSenha() != null && !usuarioComNovosDados.getSenha().isBlank()) {
             if (usuarioComNovosDados.getSenha().length() < 6) {
                 throw new RegraDeNegocioException("A nova senha deve ter no mínimo 6 caracteres.");
             }
             usuarioExistente.setSenha(usuarioComNovosDados.getSenha());
+        }
+
+
+        if (usuarioComNovosDados.getPessoa() != null) {
+
+            // Atualiza Nome
+            if (usuarioComNovosDados.getPessoa().getNome() != null && !usuarioComNovosDados.getPessoa().getNome().isBlank()) {
+                usuarioExistente.getPessoa().setNome(usuarioComNovosDados.getPessoa().getNome());
+            }
+
+            // Atualiza Telefone
+            if (usuarioComNovosDados.getPessoa().getTelefone() != null && !usuarioComNovosDados.getPessoa().getTelefone().isBlank()) {
+                usuarioExistente.getPessoa().setTelefone(usuarioComNovosDados.getPessoa().getTelefone());
+            }
+
         }
 
         return repository.save(usuarioExistente);

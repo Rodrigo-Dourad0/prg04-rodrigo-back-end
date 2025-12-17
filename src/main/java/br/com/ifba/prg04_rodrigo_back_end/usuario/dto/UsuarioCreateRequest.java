@@ -8,9 +8,6 @@ import lombok.Data;
 @Data
 public class UsuarioCreateRequest {
 
-    @NotBlank(message = "O nome é obrigatório")
-    private String nome;
-
     @NotBlank(message = "O email é obrigatório")
     @Email(message = "Formato de email inválido")
     private String email;
@@ -19,6 +16,23 @@ public class UsuarioCreateRequest {
     @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
     private String senha;
 
-    private String cpf;
-    private String telefone;
+    // Dados Aninhados
+    private PessoaRequest pessoa;
+
+    @Data
+    public static class PessoaRequest {
+        @NotBlank private String nome;
+        private String cpf;
+        private String telefone;
+        private EnderecoRequest endereco;
+    }
+
+    @Data
+    public static class EnderecoRequest {
+        private String rua;
+        private String numero;
+        private String bairro;
+        private String cidade;
+        private String cep;
+    }
 }
