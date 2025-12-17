@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
 
