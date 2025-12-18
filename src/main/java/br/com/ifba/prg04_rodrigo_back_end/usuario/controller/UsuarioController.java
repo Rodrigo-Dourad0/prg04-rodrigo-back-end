@@ -29,17 +29,28 @@ public class UsuarioController {
 
     @GetMapping
     public ResponseEntity<Page<UsuarioResponse>> listarTodos(
-            @PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable) {
+            @PageableDefault(page = 0, size = 10, sort = "pessoa.nome") Pageable pageable) {
 
         Page<Usuario> usuariosPage = service.findAll(pageable);
 
-        Page<UsuarioResponse> response = usuariosPage.map(usuario ->
-                objectMapper.map(usuario, UsuarioResponse.class)
-        );
+     
+        Page<UsuarioResponse> response = usuariosPage.map(usuario -> {
+
+            UsuarioResponse dto = objectMapper.map(usuario, UsuarioResponse.class);
+
+            dto.setOrganizadorAtivo(usuario.isOrganizador());
+
+
+            if (usuario.getPessoa() != null) {
+                dto.setNome(usuario.getPessoa().getNome());
+            }
+
+            return dto;
+        });
+
 
         return ResponseEntity.ok(response);
     }
-
 
     @PostMapping("/cadastrar")
     public ResponseEntity<UsuarioResponse> cadastrar(@RequestBody @Valid UsuarioCreateRequest request) {

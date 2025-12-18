@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "tb_pessoas")
@@ -23,5 +24,6 @@ public class Pessoa extends PersistenceEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id")
+    @ToString.Exclude
     private Endereco endereco;
 }

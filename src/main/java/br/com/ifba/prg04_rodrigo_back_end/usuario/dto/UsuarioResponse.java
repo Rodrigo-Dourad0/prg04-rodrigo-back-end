@@ -1,5 +1,6 @@
 package br.com.ifba.prg04_rodrigo_back_end.usuario.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -9,6 +10,6 @@ public class UsuarioResponse {
     private String nome;
     private String email;
 
-    // O front-end precisa saber disso para mostrar botões extras
-    private boolean isOrganizador;
+    @JsonProperty("isOrganizador")
+    private boolean organizadorAtivo;
 }

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "tb_usuarios")
@@ -24,10 +25,12 @@ public class Usuario extends PersistenceEntity {
     // Relacionamento com Pessoa
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pessoa_id")
+    @ToString.Exclude
     private Pessoa pessoa;
 
     // Papéis do sistema
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Organizador organizador;
 
     // Futura entidade Turista

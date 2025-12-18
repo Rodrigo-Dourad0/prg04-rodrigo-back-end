@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "tb_organizadores")
@@ -21,5 +22,6 @@ public class Organizador extends PersistenceEntity {
 
     @OneToOne
     @JoinColumn(name = "usuario_id")
+    @ToString.Exclude
     private Usuario usuario;
 }
