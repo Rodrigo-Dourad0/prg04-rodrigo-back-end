@@ -7,6 +7,7 @@ import br.com.ifba.prg04_rodrigo_back_end.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsuarioService implements UsuarioIService {
 
     private final UsuarioRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -22,6 +24,10 @@ public class UsuarioService implements UsuarioIService {
 
         if (repository.existsByEmail(usuario.getEmail())) {
             throw new RegraDeNegocioException("Já existe um usuário cadastrado com este e-mail.");
+        }
+
+        if (usuario.getSenha() != null) {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
 
         return repository.save(usuario);
@@ -50,46 +56,36 @@ public class UsuarioService implements UsuarioIService {
         organizador.setUsuario(usuario);
         usuario.setOrganizador(organizador);
 
-        repository.save(usuario); // Cascade salva o organizador
+        repository.save(usuario);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-
-       //Por enquanto esta deletando sem a lógica de verificar se ele tem viagens em seu nome, etc...
         Usuario usuario = findById(id);
-
         repository.delete(usuario);
     }
-
 
     @Override
     @Transactional
     public Usuario update(Long id, Usuario usuarioComNovosDados) {
         Usuario usuarioExistente = findById(id);
 
-
         if (usuarioComNovosDados.getSenha() != null && !usuarioComNovosDados.getSenha().isBlank()) {
             if (usuarioComNovosDados.getSenha().length() < 6) {
                 throw new RegraDeNegocioException("A nova senha deve ter no mínimo 6 caracteres.");
             }
-            usuarioExistente.setSenha(usuarioComNovosDados.getSenha());
+            usuarioExistente.setSenha(passwordEncoder.encode(usuarioComNovosDados.getSenha()));
         }
 
-
         if (usuarioComNovosDados.getPessoa() != null) {
-
-            // Atualiza Nome
             if (usuarioComNovosDados.getPessoa().getNome() != null && !usuarioComNovosDados.getPessoa().getNome().isBlank()) {
                 usuarioExistente.getPessoa().setNome(usuarioComNovosDados.getPessoa().getNome());
             }
 
-            // Atualiza Telefone
             if (usuarioComNovosDados.getPessoa().getTelefone() != null && !usuarioComNovosDados.getPessoa().getTelefone().isBlank()) {
                 usuarioExistente.getPessoa().setTelefone(usuarioComNovosDados.getPessoa().getTelefone());
             }
-
         }
 
         return repository.save(usuarioExistente);

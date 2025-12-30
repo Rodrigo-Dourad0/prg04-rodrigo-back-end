@@ -52,7 +52,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping
     public ResponseEntity<UsuarioResponse> cadastrar(@RequestBody @Valid UsuarioCreateRequest request) {
 
 
