@@ -56,7 +56,7 @@ public class SecurityConfigurations {
 
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
-                "https://roteirolivre.vercel.app/"
+                "https://roteirolivre.vercel.app"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
