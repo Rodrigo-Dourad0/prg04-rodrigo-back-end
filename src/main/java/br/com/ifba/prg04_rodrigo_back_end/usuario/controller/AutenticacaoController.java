@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -30,14 +31,41 @@ public class AutenticacaoController {
 
         var tokenSpring = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
 
-
-        // Se a senha estiver errada, lança uma Exception automaticamente (403)
+        // Autentica o usuario. Se falhar, lança 403 automaticamente.
         var auth = authenticationManager.authenticate(tokenSpring);
 
-        // Se chegou aqui, está logado. Gera o token.
-        var tokenJWT = tokenService.gerarToken((Usuario) auth.getPrincipal());
+        // Obtém o usuario autenticado
+        var usuario = (Usuario) auth.getPrincipal();
 
-        // Retorna o token em um JSON simples
-        return ResponseEntity.ok(Map.of("token", tokenJWT));
+        // Gera o token JWT
+        var tokenJWT = tokenService.gerarToken(usuario);
+
+        // Monta os dados de resposta
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", tokenJWT);
+        response.put("email", usuario.getEmail());
+
+        // Extrai dados da Pessoa se existirem
+        if (usuario.getPessoa() != null) {
+            response.put("nome", usuario.getPessoa().getNome());
+            response.put("telefone", usuario.getPessoa().getTelefone());
+
+            // Extrai e formata o Endereço se existir
+            if (usuario.getPessoa().getEndereco() != null) {
+                var end = usuario.getPessoa().getEndereco();
+                String enderecoFormatado = String.format("%s, %s - %s, %s/%s (CEP: %s)",
+                        end.getRua(), end.getNumero(), end.getBairro(),
+                        end.getCidade(), end.getEstado(), end.getCep());
+                response.put("endereco", enderecoFormatado);
+            } else {
+                response.put("endereco", "Endereço não cadastrado");
+            }
+        } else {
+            response.put("nome", "Não informado");
+            response.put("telefone", "Não informado");
+            response.put("endereco", "Não informado");
+        }
+
+        return ResponseEntity.ok(response);
     }
 }
