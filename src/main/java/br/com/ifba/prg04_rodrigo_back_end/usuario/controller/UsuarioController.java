@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -65,22 +66,17 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/tornar-organizador/{id}")
-    public ResponseEntity<Void> tornarOrganizador(@PathVariable Long id,
-                                                  @RequestBody @Valid PerfilOrganizadorRequest request) {
+    @PostMapping("/tornar-organizador")
+    public ResponseEntity<Void> tornarOrganizador(@RequestBody @Valid PerfilOrganizadorRequest request) {
 
+        // Pega o usuário logado diretamente do SecurityContext (extraído do Token)
+        Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
         Organizador perfilEntidade = objectMapper.map(request, Organizador.class);
+        
+        service.tornarOrganizador(usuarioLogado.getId(), perfilEntidade);
 
-
-        service.tornarOrganizador(id, perfilEntidade);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
