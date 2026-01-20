@@ -80,15 +80,13 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
-                                                     @RequestBody UsuarioUpdateRequest request) {
+    @PutMapping
+    public ResponseEntity<UsuarioResponse> atualizar(@RequestBody @Valid UsuarioUpdateRequest request) {
 
-        Usuario usuarioComNovosDados = objectMapper.map(request, Usuario.class);
-
-
-        Usuario usuarioAtualizado = service.update(id, usuarioComNovosDados);
-
+        Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        
+        Usuario usuarioAtualizado = service.update(usuarioLogado.getId(), request);
 
         UsuarioResponse response = objectMapper.map(usuarioAtualizado, UsuarioResponse.class);
 

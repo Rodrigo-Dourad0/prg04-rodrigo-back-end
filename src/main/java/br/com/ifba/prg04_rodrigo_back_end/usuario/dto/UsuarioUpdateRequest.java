@@ -1,11 +1,22 @@
 package br.com.ifba.prg04_rodrigo_back_end.usuario.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-@Data
-public class UsuarioUpdateRequest {
-    // Não usamos @NotBlank aqui porque o campo pode vir nulo (significa que não quer alterar)
-    private String nome;
-    private String telefone;
-    private String senha;
+public record UsuarioUpdateRequest(
+        @NotBlank(message = "O e-mail não pode estar vazio")
+        @Email(message = "Formato de e-mail inválido")
+        String email,
+
+        @NotBlank(message = "O telefone é obrigatório")
+        String telefone,
+
+        // Campos detalhados de endereço para maior precisão no banco de dados
+        String rua,
+        String numero,
+        String bairro,
+        String cidade,
+        String estado,
+        String cep
+) {
 }

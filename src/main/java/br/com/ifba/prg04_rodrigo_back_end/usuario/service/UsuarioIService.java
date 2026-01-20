@@ -1,6 +1,7 @@
 package br.com.ifba.prg04_rodrigo_back_end.usuario.service;
 
 import br.com.ifba.prg04_rodrigo_back_end.organizador.entity.Organizador;
+import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioUpdateRequest;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.entity.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,5 @@ public interface UsuarioIService {
 
     void delete(Long id);
 
-    Usuario update(Long id, Usuario usuarioComNovosDados);
+    Usuario update(Long id, UsuarioUpdateRequest request);
 }

@@ -1,7 +1,9 @@
 package br.com.ifba.prg04_rodrigo_back_end.usuario.service;
 
+import br.com.ifba.prg04_rodrigo_back_end.infraestructure.entity.Endereco;
 import br.com.ifba.prg04_rodrigo_back_end.infraestructure.exception.RegraDeNegocioException;
 import br.com.ifba.prg04_rodrigo_back_end.organizador.entity.Organizador;
+import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioUpdateRequest;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.entity.Usuario;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -68,26 +70,45 @@ public class UsuarioService implements UsuarioIService {
 
     @Override
     @Transactional
-    public Usuario update(Long id, Usuario usuarioComNovosDados) {
+    public Usuario update(Long id, UsuarioUpdateRequest request) {
+        // Busca o usuário existente (seu método findById já deve tratar a exceção)
         Usuario usuarioExistente = findById(id);
 
-        if (usuarioComNovosDados.getSenha() != null && !usuarioComNovosDados.getSenha().isBlank()) {
-            if (usuarioComNovosDados.getSenha().length() < 6) {
-                throw new RegraDeNegocioException("A nova senha deve ter no mínimo 6 caracteres.");
-            }
-            usuarioExistente.setSenha(passwordEncoder.encode(usuarioComNovosDados.getSenha()));
+
+        if (!usuarioExistente.getEmail().equals(request.email())) {
+            repository.findByEmail(request.email()).ifPresent(u -> {
+
+                if (!u.getId().equals(id)) {
+                    throw new RegraDeNegocioException("Este e-mail já está em uso por outro usuário.");
+                }
+            });
+            usuarioExistente.setEmail(request.email());
         }
 
-        if (usuarioComNovosDados.getPessoa() != null) {
-            if (usuarioComNovosDados.getPessoa().getNome() != null && !usuarioComNovosDados.getPessoa().getNome().isBlank()) {
-                usuarioExistente.getPessoa().setNome(usuarioComNovosDados.getPessoa().getNome());
+        // Atualização dos dados de Pessoa
+        if (usuarioExistente.getPessoa() != null) {
+            // Atualiza telefone
+            usuarioExistente.getPessoa().setTelefone(request.telefone());
+
+
+            var end = usuarioExistente.getPessoa().getEndereco();
+
+
+            if (end == null) {
+                end = new Endereco();
+                usuarioExistente.getPessoa().setEndereco(end);
             }
 
-            if (usuarioComNovosDados.getPessoa().getTelefone() != null && !usuarioComNovosDados.getPessoa().getTelefone().isBlank()) {
-                usuarioExistente.getPessoa().setTelefone(usuarioComNovosDados.getPessoa().getTelefone());
-            }
+            // Mapeia cada campo individualmente para o banco de dados
+            end.setRua(request.rua());
+            end.setNumero(request.numero());
+            end.setBairro(request.bairro());
+            end.setCidade(request.cidade());
+            end.setEstado(request.estado());
+            end.setCep(request.cep());
         }
 
+        // Persiste as alterações
         return repository.save(usuarioExistente);
     }
 }
