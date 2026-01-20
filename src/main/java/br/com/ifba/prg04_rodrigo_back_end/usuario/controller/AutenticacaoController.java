@@ -45,6 +45,8 @@ public class AutenticacaoController {
         response.put("token", tokenJWT);
         response.put("email", usuario.getEmail());
 
+        response.put("organizadorAtivo", usuario.isOrganizador());
+
         // Extrai dados da Pessoa se existirem
         if (usuario.getPessoa() != null) {
             response.put("nome", usuario.getPessoa().getNome());
