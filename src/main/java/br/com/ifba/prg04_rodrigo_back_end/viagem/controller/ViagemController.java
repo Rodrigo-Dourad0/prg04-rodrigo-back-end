@@ -29,6 +29,8 @@ public class ViagemController {
         // DTO -> Entidade
         Viagem entidade = objectMapper.map(request, Viagem.class);
 
+        entidade.setId(null);
+
         // Service
         Viagem salva = service.save(entidade, request.getOrganizadorId());
 
