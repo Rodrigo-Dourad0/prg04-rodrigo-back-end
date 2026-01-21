@@ -4,9 +4,10 @@ import br.com.ifba.prg04_rodrigo_back_end.infraestructure.mapper.ObjectMapperUti
 import br.com.ifba.prg04_rodrigo_back_end.organizador.dto.PerfilOrganizadorRequest;
 import br.com.ifba.prg04_rodrigo_back_end.organizador.entity.Organizador;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioCreateRequest;
-import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioUpdateRequest;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioResponse;
+import br.com.ifba.prg04_rodrigo_back_end.usuario.dto.UsuarioUpdateRequest;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.entity.Usuario;
+import br.com.ifba.prg04_rodrigo_back_end.usuario.mapper.UsuarioMapper;
 import br.com.ifba.prg04_rodrigo_back_end.usuario.service.UsuarioIService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,57 +25,35 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class UsuarioController {
 
-
     private final UsuarioIService service;
     private final ObjectMapperUtil objectMapper;
+    private final UsuarioMapper usuarioMapper;
 
     @GetMapping
     public ResponseEntity<Page<UsuarioResponse>> listarTodos(
             @PageableDefault(page = 0, size = 10, sort = "pessoa.nome") Pageable pageable) {
 
         Page<Usuario> usuariosPage = service.findAll(pageable);
-
-     
-        Page<UsuarioResponse> response = usuariosPage.map(usuario -> {
-
-            UsuarioResponse dto = objectMapper.map(usuario, UsuarioResponse.class);
-
-            dto.setOrganizadorAtivo(usuario.isOrganizador());
-
-
-            if (usuario.getPessoa() != null) {
-                dto.setNome(usuario.getPessoa().getNome());
-            }
-
-            return dto;
-        });
-
+        Page<UsuarioResponse> response = usuariosPage.map(usuarioMapper::toResponse);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<UsuarioResponse> cadastrar(@RequestBody @Valid UsuarioCreateRequest request) {
-
-
         Usuario usuarioEntidade = objectMapper.map(request, Usuario.class);
-
         Usuario usuarioSalvo = service.save(usuarioEntidade);
 
-        UsuarioResponse response = objectMapper.map(usuarioSalvo, UsuarioResponse.class);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(usuarioMapper.toResponse(usuarioSalvo));
     }
 
     @PostMapping("/tornar-organizador")
     public ResponseEntity<Void> tornarOrganizador(@RequestBody @Valid PerfilOrganizadorRequest request) {
-
-        // Pega o usuário logado diretamente do SecurityContext (extraído do Token)
         Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
         Organizador perfilEntidade = objectMapper.map(request, Organizador.class);
-        
         service.tornarOrganizador(usuarioLogado.getId(), perfilEntidade);
 
         return ResponseEntity.noContent().build();
@@ -82,14 +61,11 @@ public class UsuarioController {
 
     @PutMapping
     public ResponseEntity<UsuarioResponse> atualizar(@RequestBody @Valid UsuarioUpdateRequest request) {
-
         Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        
+
         Usuario usuarioAtualizado = service.update(usuarioLogado.getId(), request);
 
-        UsuarioResponse response = objectMapper.map(usuarioAtualizado, UsuarioResponse.class);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(usuarioMapper.toResponse(usuarioAtualizado));
     }
 }

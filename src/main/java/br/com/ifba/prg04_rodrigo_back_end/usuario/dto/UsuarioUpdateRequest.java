@@ -11,12 +11,21 @@ public record UsuarioUpdateRequest(
         @NotBlank(message = "O telefone é obrigatório")
         String telefone,
 
-        // Campos detalhados de endereço para maior precisão no banco de dados
+        @NotBlank(message = "A rua é obrigatória")
         String rua,
-        String numero,
+
+        @NotBlank(message = "O bairro é obrigatório")
         String bairro,
+
+        @NotBlank(message = "A cidade é obrigatória")
         String cidade,
+
+        @NotBlank(message = "O estado é obrigatório")
         String estado,
-        String cep
+
+        @NotBlank(message = "O CEP é obrigatório")
+        String cep,
+
+        String numero
 ) {
 }

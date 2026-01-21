@@ -1,6 +1,7 @@
 package br.com.ifba.prg04_rodrigo_back_end.infraestructure.mapper;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies; // <--- Importante
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,8 @@ public class ObjectMapperUtil {
 
     public ObjectMapperUtil() {
         this.modelMapper = new ModelMapper();
+
+        this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
     }
 
     public <D, T> D map(final T entity, Class<D> outClass) {
