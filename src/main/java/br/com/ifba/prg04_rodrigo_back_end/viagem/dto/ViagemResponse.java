@@ -18,6 +18,8 @@ public class ViagemResponse {
 
     private LocalDateTime dataPartida;
 
+    private LocalDateTime dataRetorno;
+
     private BigDecimal preco;
 
     private Integer vagasTotais;
