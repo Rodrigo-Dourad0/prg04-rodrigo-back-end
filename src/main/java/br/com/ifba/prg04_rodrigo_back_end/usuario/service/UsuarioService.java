@@ -71,7 +71,7 @@ public class UsuarioService implements UsuarioIService {
     @Override
     @Transactional
     public Usuario update(Long id, UsuarioUpdateRequest request) {
-        // Busca o usuário existente (seu método findById já deve tratar a exceção)
+        // Busca o usuário existente
         Usuario usuarioExistente = findById(id);
 
 

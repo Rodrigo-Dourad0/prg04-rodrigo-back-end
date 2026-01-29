@@ -29,6 +29,7 @@ public class Viagem extends PersistenceEntity {
 
     private BigDecimal preco;
     private Integer vagasTotais;
+    private String imagemUrl;
 
     @Enumerated(EnumType.STRING) // Salva no banco como texto ("ABERTA") em vez de número (0)
     private StatusViagem status = StatusViagem.ABERTA;

@@ -118,10 +118,12 @@ public class ViagemService implements ViagemIService {
             viagem.setDataRetorno(novosDados.getDataRetorno());
             viagem.setPreco(novosDados.getPreco());
             viagem.setVagasTotais(novosDados.getVagasTotais());
+
         }
 
         viagem.setTitulo(novosDados.getTitulo());
         viagem.setDescricao(novosDados.getDescricao());
+        viagem.setImagemUrl(novosDados.getImagemUrl());
 
         return viagemRepository.save(viagem);
     }

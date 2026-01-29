@@ -28,4 +28,6 @@ public class ViagemResponse {
 
     private String nomeOrganizador;
 
+    private String imagemUrl;
+
 }

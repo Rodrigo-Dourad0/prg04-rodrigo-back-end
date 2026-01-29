@@ -29,6 +29,8 @@ public class ViagemController {
         // DTO -> Entidade
         Viagem entidade = objectMapper.map(request, Viagem.class);
 
+        System.out.println("URL CHEGOU? " + request.getImagemUrl());
+
         entidade.setId(null);
 
         // Service

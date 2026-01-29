@@ -34,6 +34,8 @@ public class ViagemCreateRequest {
     private Integer vagasTotais;
 
 
+    private String imagemUrl;
+
     @NotNull
     private Long organizadorId;
 }
