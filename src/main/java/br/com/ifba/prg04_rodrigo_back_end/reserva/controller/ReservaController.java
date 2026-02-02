@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/reservas")
 @RequiredArgsConstructor
@@ -26,8 +24,8 @@ public class ReservaController {
 
     @PostMapping("/nova")
     public ResponseEntity<ReservaResponse> criar(@RequestBody @Valid ReservaCreateRequest request) {
-        // DTO -> Entidade (Mapeia a quantidade de lugares)
-        Reserva entidade = objectMapper.map(request, Reserva.class);
+        Reserva entidade = new Reserva();
+        entidade.setQuantidadeLugares(request.getQuantidadeLugares());
 
         Reserva salva = service.save(entidade, request.getUsuarioId(), request.getViagemId());
 

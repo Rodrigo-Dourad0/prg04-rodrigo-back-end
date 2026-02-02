@@ -11,7 +11,7 @@ public class ReservaResponse {
     private String nomeUsuario;
     private String tituloViagem;
     private Integer quantidadeLugares;
-    private BigDecimal valorTotal; // Preço unitário x Quantidade
+    private BigDecimal valorTotal;
     private StatusPagamento status;
     private LocalDateTime dataReserva;
 }
