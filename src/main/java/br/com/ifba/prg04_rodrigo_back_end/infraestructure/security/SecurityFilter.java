@@ -25,26 +25,29 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 1. Tenta recuperar o token do cabeçalho
-        var token = this.recoverToken(request);
+        try {
+            // 1. Tenta recuperar o token do cabeçalho
+            var token = this.recoverToken(request);
 
-        // 2. Se o token existir, valida
-        if (token != null) {
-            // Se o token for inválido, o TokenService lança exceção ou retorna null
-            var login = tokenService.getSubject(token);
+            // 2. Se o token existir, valida
+            if (token != null) {
+                // Tenta validar. Se o token estiver expirado ou inválido, o getSubject pode lançar erro.
+                var login = tokenService.getSubject(token);
 
-            if (login != null) {
-                // 3. Busca o usuário no banco
-                UserDetails usuario = repository.findByEmail(login).orElse(null);
+                if (login != null) {
+                    // 3. Busca o usuário no banco
+                    UserDetails usuario = repository.findByEmail(login).orElse(null);
 
-                if (usuario != null) {
-                    // 4. Cria a autenticação forçada para este request
-                    var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-
-                    // 5. Salva no contexto de segurança
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    if (usuario != null) {
+                        // 4. Cria a autenticação forçada para este request
+                        var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             }
+        } catch (Exception e) {
+
+            System.out.println("Erro ao validar token no filtro (ignorando para permitir auth anônima): " + e.getMessage());
         }
 
 
@@ -54,7 +57,6 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null) return null;
-
         return authHeader.replace("Bearer ", "");
     }
 }
