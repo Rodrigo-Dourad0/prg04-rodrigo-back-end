@@ -34,6 +34,9 @@ public class SecurityConfigurations {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
+                    // --- CORREÇÃO IMPORTANTE 1: Liberar OPTIONS globalmente ---
+                    req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/usuarios").permitAll();
                     req.requestMatchers(HttpMethod.GET, "/viagens").permitAll();
@@ -50,15 +53,21 @@ public class SecurityConfigurations {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
+
+        // --- CORREÇÃO IMPORTANTE 2: Usar setAllowedOriginPatterns em vez de Origins ---
+        // Isso ajuda quando o navegador envia variações de origem ou em ambientes cloud
+        configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:5173",
                 "http://127.0.0.1:5173",
                 "https://roteirolivre.vercel.app",
-                "https://prg04-rodrigo-front-end-react-ahn052w28.vercel.app"
+                "https://prg04-rodrigo-front-end-react-ahn052w28.vercel.app",
+                "*" // Temporariamente útil para debug se os de cima falharem
         ));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "x-requested-with"));
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
